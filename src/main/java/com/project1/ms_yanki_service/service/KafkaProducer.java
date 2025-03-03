@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaProducer {
     @Autowired
-    private KafkaTemplate<String, CreateWalletTransactionRequest> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void send(String topic, CreateWalletTransactionRequest message) {
+    public void send(String topic, String message) {
         kafkaTemplate.send(topic, message);
     }
 }
