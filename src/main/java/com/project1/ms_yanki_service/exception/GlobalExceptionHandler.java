@@ -61,6 +61,12 @@ public class GlobalExceptionHandler {
                 .body(responseBase));
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public Mono<ResponseEntity<ResponseBase>> handleUnauthorizedException(Exception ex) {
+        log.error("Error", ex);
+        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+    }
+
     @ExceptionHandler(ServerWebInputException.class)
     public Mono<ResponseEntity<Map<String, List<String>>>> handleServerWebInputException(ServerWebInputException ex) {
         log.error("error", ex);

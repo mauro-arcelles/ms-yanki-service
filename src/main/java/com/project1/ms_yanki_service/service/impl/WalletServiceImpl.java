@@ -1,6 +1,7 @@
 package com.project1.ms_yanki_service.service.impl;
 
 import com.project1.ms_yanki_service.config.CustomObjectMapper;
+import com.project1.ms_yanki_service.config.auth.SecurityUtils;
 import com.project1.ms_yanki_service.exception.BadRequestException;
 import com.project1.ms_yanki_service.model.domain.CreateWalletRequest;
 import com.project1.ms_yanki_service.model.domain.CreateWalletResponse;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.adapter.rxjava.RxJava3Adapter;
 import reactor.core.publisher.Mono;
 
@@ -39,8 +41,11 @@ public class WalletServiceImpl implements WalletService {
     @Autowired
     private CustomObjectMapper objectMapper;
 
+    @Autowired
+    private SecurityUtils securityUtils;
+
     @Override
-    public Single<CreateWalletResponse> createWallet(Single<CreateWalletRequest> request) {
+    public Single<CreateWalletResponse> createWallet(Single<CreateWalletRequest> request, ServerWebExchange exchange) {
         return request
             .flatMap(req ->
                 RxJava3Adapter.monoToSingle(walletRepository.findByDocumentNumber(req.getDocumentNumber())
@@ -49,6 +54,12 @@ public class WalletServiceImpl implements WalletService {
                     .then(Mono.just(req)))
             )
             .map(walletMapper::getCreateWalletEntity)
+            .flatMap(wallet -> securityUtils.getUserIdFromToken(exchange)
+                .map(userId -> {
+                    wallet.setUserId(userId);
+                    return wallet;
+                })
+            )
             .flatMap(wallet -> RxJava3Adapter.monoToSingle(walletRepository.save(wallet)))
             .map(walletMapper::getCreateWalletResponse);
     }

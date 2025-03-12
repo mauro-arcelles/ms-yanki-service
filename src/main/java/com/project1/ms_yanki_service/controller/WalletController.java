@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 
 import javax.validation.Valid;
 
@@ -24,8 +25,8 @@ public class WalletController {
     private WalletService walletService;
 
     @PostMapping
-    public Single<ResponseEntity<CreateWalletResponse>> createWallet(@Valid @RequestBody Single<CreateWalletRequest> request) {
-        return walletService.createWallet(request).map(ResponseEntity.status(HttpStatus.CREATED)::body);
+    public Single<ResponseEntity<CreateWalletResponse>> createWallet(@Valid @RequestBody Single<CreateWalletRequest> request, ServerWebExchange exchange) {
+        return walletService.createWallet(request, exchange).map(ResponseEntity.status(HttpStatus.CREATED)::body);
     }
 
     @PostMapping("/transaction")

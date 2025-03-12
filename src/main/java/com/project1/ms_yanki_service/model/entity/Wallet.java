@@ -29,4 +29,6 @@ public class Wallet {
     private WalletStatus status;
 
     private LocalDateTime creationDate;
+
+    private String userId;
 }
