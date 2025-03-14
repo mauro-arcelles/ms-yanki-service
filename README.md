@@ -1,6 +1,6 @@
 # Yanki Microservice
 
-Spring Boot Webflux microservice that handles account operations (accounts CRUD).
+Spring Boot Webflux microservice that handles wallet operations.
 
 ## Stack
 - Java 11
@@ -56,3 +56,4 @@ springdoc:
 ## Swagger
 http://localhost:9090/swagger-ui.html
 
+![ms-yanki-service-2025-03-14-160844](https://github.com/user-attachments/assets/effe4c87-98b1-4ecc-a9ef-1b3e619bc6df)
