@@ -24,6 +24,14 @@ public class SecurityConfig {
     @Autowired
     private TokenAuthenticationConverter tokenAuthenticationConverter;
 
+    private static final String[] AUTH_WHITELIST = {
+        "/swagger-ui.html",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/actuator/**",
+        "/yanki-docs/**",
+    };
+
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http
@@ -33,6 +41,7 @@ public class SecurityConfig {
             .logout().disable()
             .authorizeExchange()
             .pathMatchers(HttpMethod.OPTIONS).permitAll()
+            .pathMatchers(AUTH_WHITELIST).permitAll()
             .anyExchange().authenticated()
             .and()
             .addFilterAt(webFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
