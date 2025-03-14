@@ -170,36 +170,6 @@
                 </configuration>
             </plugin>
 
-            <!--			<plugin>-->
-            <!--				<groupId>org.openapitools</groupId>-->
-            <!--				<artifactId>openapi-generator-maven-plugin</artifactId>-->
-            <!--				<version>7.11.0</version>-->
-            <!--				<configuration>-->
-            <!--					<inputSpec>${project.basedir}/src/main/resources/openapi.yml</inputSpec>-->
-            <!--					<generatorName>spring</generatorName>-->
-            <!--					<apiPackage>com.project1.ms_yanki_service.api</apiPackage>-->
-            <!--					<modelPackage>com.project1.ms_yanki_service.model</modelPackage>-->
-            <!--					<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>-->
-            <!--					<configOptions>-->
-            <!--						<reactive>true</reactive>-->
-            <!--						<delegatePattern>true</delegatePattern>-->
-            <!--					</configOptions>-->
-            <!--					<typeMappings>-->
-            <!--						<typeMapping>Mono=io.reactivex.rxjava3.core.Single</typeMapping>-->
-            <!--					</typeMappings>-->
-            <!--					<importMappings>-->
-            <!--						<importMapping>Single=io.reactivex.rxjava3.core.Single</importMapping>-->
-            <!--					</importMappings>-->
-            <!--				</configuration>-->
-            <!--				<executions>-->
-            <!--					<execution>-->
-            <!--						<goals>-->
-            <!--							<goal>generate</goal>-->
-            <!--						</goals>-->
-            <!--					</execution>-->
-            <!--				</executions>-->
-            <!--			</plugin>-->
-
             <!--Jacoco-->
             <plugin>
                 <groupId>org.jacoco</groupId>
