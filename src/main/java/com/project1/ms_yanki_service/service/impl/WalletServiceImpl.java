@@ -4,7 +4,6 @@ import com.project1.ms_yanki_service.config.CustomObjectMapper;
 import com.project1.ms_yanki_service.config.auth.SecurityUtils;
 import com.project1.ms_yanki_service.exception.BadRequestException;
 import com.project1.ms_yanki_service.model.domain.*;
-import com.project1.ms_yanki_service.model.entity.Wallet;
 import com.project1.ms_yanki_service.model.entity.WalletTransactionType;
 import com.project1.ms_yanki_service.model.mapper.WalletMapper;
 import com.project1.ms_yanki_service.repository.WalletRepository;
@@ -56,6 +55,11 @@ public class WalletServiceImpl implements WalletService {
             )
             .map(walletMapper::getCreateWalletEntity)
             .flatMap(wallet -> securityUtils.getUserIdFromToken(exchange)
+                .flatMap(userId ->
+                    RxJava3Adapter.monoToSingle(walletRepository.findByUserId(userId)
+                        .flatMap(e -> Mono.error(new BadRequestException("The user already has a wallet")))
+                        .then(Mono.just(userId)))
+                )
                 .map(userId -> {
                     wallet.setUserId(userId);
                     return wallet;
@@ -115,5 +119,12 @@ public class WalletServiceImpl implements WalletService {
                 })
                 .then());
         });
+    }
+
+    @Override
+    public Single<GetWalletResponse> getWalletByUserId(String userId) {
+        return RxJava3Adapter.monoToSingle(walletRepository.findByUserId(userId)
+            .switchIfEmpty(Mono.error(new BadRequestException("WALLET not found with userId " + userId)))
+            .map(walletMapper::getGetWalletResponse));
     }
 }

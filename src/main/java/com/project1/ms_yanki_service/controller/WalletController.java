@@ -78,6 +78,11 @@ public class WalletController {
         return walletService.getWalletById(id).map(ResponseEntity::ok);
     }
 
+    @GetMapping("/by-user-id/{userId}")
+    public Single<ResponseEntity<GetWalletResponse>> getWalletByUserId(@PathVariable String userId) {
+        return walletService.getWalletByUserId(userId).map(ResponseEntity::ok);
+    }
+
     @PutMapping("/{id}")
     public Maybe<ResponseEntity<Void>> updateWallet(@PathVariable String id, @Valid @RequestBody Single<UpdateWalletRequest> request) {
         return walletService.updateWallet(id, request).map(v -> ResponseEntity.noContent().build());

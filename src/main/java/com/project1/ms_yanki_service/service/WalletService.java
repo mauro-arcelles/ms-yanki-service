@@ -13,4 +13,6 @@ public interface WalletService {
     Single<GetWalletResponse> getWalletById(String walletId);
 
     Maybe<Void> updateWallet(String walletId, Single<UpdateWalletRequest> request);
+
+    Single<GetWalletResponse> getWalletByUserId(String userId);
 }

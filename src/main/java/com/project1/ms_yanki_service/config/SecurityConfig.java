@@ -31,6 +31,7 @@ public class SecurityConfig {
         "/actuator/**",
         "/yanki-docs/**",
         "/api/v1/yanki/wallets/**",
+        "/api/v1/yanki/wallets/by-user-id/**",
     };
 
     @Bean

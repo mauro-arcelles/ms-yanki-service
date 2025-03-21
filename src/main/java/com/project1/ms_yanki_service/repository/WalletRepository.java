@@ -8,4 +8,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface WalletRepository extends ReactiveMongoRepository<Wallet, String> {
     Mono<Wallet> findByDocumentNumber(String documentNumber);
+
+    Mono<Wallet> findByUserId(String userId);
 }
