@@ -30,6 +30,7 @@ public class SecurityConfig {
         "/swagger-ui/**",
         "/actuator/**",
         "/yanki-docs/**",
+        "/api/v1/yanki/wallets/**",
     };
 
     @Bean

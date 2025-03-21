@@ -23,7 +23,7 @@ public class CreateWalletTransactionRequest {
     @DecimalMin("1.0")
     private BigDecimal amount;
 
-    @EnumNamePattern(regexp = "DEPOSIT|WITHDRAWAL|TRANSFER")
+    @EnumNamePattern(regexp = "DEPOSIT|TRANSFER")
     @NotNull
-    private WalletTransactionType type;
+    private String type;
 }

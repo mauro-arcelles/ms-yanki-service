@@ -1,22 +1,13 @@
-package com.project1.ms_yanki_service.model.entity;
+package com.project1.ms_yanki_service.model.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.project1.ms_yanki_service.model.entity.WalletStatus;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Document(collection = "wallets")
-public class Wallet {
-    @Id
+public class GetWalletResponse {
     private String id;
 
     private String documentNumber;

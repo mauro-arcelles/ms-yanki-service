@@ -4,7 +4,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Pattern;
 
-public class EnumNamePatternValidator implements ConstraintValidator<EnumNamePattern, Enum<?>> {
+public class EnumNamePatternValidator implements ConstraintValidator<EnumNamePattern, String> {
     private Pattern pattern;
 
     @Override
@@ -13,10 +13,10 @@ public class EnumNamePatternValidator implements ConstraintValidator<EnumNamePat
     }
 
     @Override
-    public boolean isValid(Enum<?> value, ConstraintValidatorContext context) {
+    public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
             return true;
         }
-        return pattern.matcher(value.name()).matches();
+        return pattern.matcher(value).matches();
     }
 }

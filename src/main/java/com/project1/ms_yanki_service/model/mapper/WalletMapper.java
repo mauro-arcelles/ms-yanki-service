@@ -3,11 +3,13 @@ package com.project1.ms_yanki_service.model.mapper;
 import com.project1.ms_yanki_service.model.domain.CreateWalletRequest;
 import com.project1.ms_yanki_service.model.domain.CreateWalletResponse;
 import com.project1.ms_yanki_service.model.domain.CreateWalletTransactionResponse;
+import com.project1.ms_yanki_service.model.domain.GetWalletResponse;
 import com.project1.ms_yanki_service.model.entity.Wallet;
 import com.project1.ms_yanki_service.model.entity.WalletStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDateTime;
 
@@ -25,6 +27,7 @@ public class WalletMapper {
             .phoneImei(request.getPhoneImei())
             .creationDate(LocalDateTime.now(clock))
             .status(WalletStatus.ACTIVE)
+            .balance(BigDecimal.ZERO)
             .build();
     }
 
@@ -41,6 +44,20 @@ public class WalletMapper {
     public CreateWalletTransactionResponse getCreateWalletTransactionResponse() {
         CreateWalletTransactionResponse response = new CreateWalletTransactionResponse();
         response.setMessage("Transaction message sent correctly");
+        return response;
+    }
+
+    public GetWalletResponse getGetWalletResponse(Wallet wallet) {
+        GetWalletResponse response = new GetWalletResponse();
+        response.setId(wallet.getId());
+        response.setDocumentNumber(wallet.getDocumentNumber());
+        response.setEmail(wallet.getEmail());
+        response.setPhoneImei(wallet.getPhoneImei());
+        response.setPhoneNumber(wallet.getPhoneNumber());
+        response.setBalance(wallet.getBalance());
+        response.setCreationDate(wallet.getCreationDate());
+        response.setStatus(wallet.getStatus());
+        response.setUserId(wallet.getUserId());
         return response;
     }
 }

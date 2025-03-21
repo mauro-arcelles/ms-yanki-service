@@ -3,13 +3,13 @@ package com.project1.ms_yanki_service.service.impl;
 import com.project1.ms_yanki_service.config.CustomObjectMapper;
 import com.project1.ms_yanki_service.config.auth.SecurityUtils;
 import com.project1.ms_yanki_service.exception.BadRequestException;
-import com.project1.ms_yanki_service.model.domain.CreateWalletRequest;
-import com.project1.ms_yanki_service.model.domain.CreateWalletResponse;
-import com.project1.ms_yanki_service.model.domain.CreateWalletTransactionRequest;
-import com.project1.ms_yanki_service.model.domain.CreateWalletTransactionResponse;
+import com.project1.ms_yanki_service.model.domain.*;
+import com.project1.ms_yanki_service.model.entity.Wallet;
+import com.project1.ms_yanki_service.model.entity.WalletTransactionType;
 import com.project1.ms_yanki_service.model.mapper.WalletMapper;
 import com.project1.ms_yanki_service.repository.WalletRepository;
 import com.project1.ms_yanki_service.service.WalletService;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.adapter.rxjava.RxJava3Adapter;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -68,6 +69,23 @@ public class WalletServiceImpl implements WalletService {
     public Single<CreateWalletTransactionResponse> createWalletTransaction(Single<CreateWalletTransactionRequest> request) {
         return request
             .flatMap(req -> {
+                if (req.getOriginWalletId().equals(req.getDestinationWalletId())) {
+                    return Single.error(new BadRequestException("Origin and destination WALLET ids should be different"));
+                }
+                return RxJava3Adapter.monoToSingle(walletRepository.findById(req.getOriginWalletId())
+                    .switchIfEmpty(Mono.error(new BadRequestException("Origin WALLET not found with id " + req.getOriginWalletId())))
+                    .flatMap(originWallet -> {
+                        if (WalletTransactionType.TRANSFER.toString().equals(req.getType())) {
+                            if (originWallet.getBalance().compareTo(req.getAmount()) < 0) {
+                                return Mono.error(new BadRequestException("Insufficient balance in origin WALLET"));
+                            }
+                        }
+                        return walletRepository.findById(req.getDestinationWalletId());
+                    })
+                    .switchIfEmpty(Mono.error(new BadRequestException("Destination WALLET not found with id " + req.getDestinationWalletId())))
+                    .flatMap(destionationWallet -> Mono.just(req)));
+            })
+            .flatMap(req -> {
                 try {
                     String message = objectMapper.objectToString(req);
                     kafkaTemplate.send(kafkaTopicName, message).get(3, TimeUnit.SECONDS);
@@ -77,5 +95,25 @@ public class WalletServiceImpl implements WalletService {
                 }
             })
             .map(e -> walletMapper.getCreateWalletTransactionResponse());
+    }
+
+    @Override
+    public Single<GetWalletResponse> getWalletById(String walletId) {
+        return RxJava3Adapter.monoToSingle(walletRepository.findById(walletId)
+                .switchIfEmpty(Mono.error(new BadRequestException("WALLET not found with id " + walletId))))
+            .map(walletMapper::getGetWalletResponse);
+    }
+
+    @Override
+    public Maybe<Void> updateWallet(String walletId, Single<UpdateWalletRequest> request) {
+        return request.flatMapMaybe(req -> {
+            return RxJava3Adapter.monoToMaybe(walletRepository.findById(walletId)
+                .switchIfEmpty(Mono.error(new BadRequestException("WALLET not found with id " + walletId)))
+                .flatMap(wallet -> {
+                    Optional.ofNullable(req.getBalance()).ifPresent(wallet::setBalance);
+                    return walletRepository.save(wallet);
+                })
+                .then());
+        });
     }
 }
