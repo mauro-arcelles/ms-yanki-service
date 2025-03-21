@@ -1,6 +1,5 @@
 package com.project1.ms_yanki_service.config;
 
-import com.project1.ms_yanki_service.model.domain.CreateWalletTransactionRequest;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;

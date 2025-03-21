@@ -24,7 +24,7 @@ import org.springframework.web.server.ServerWebExchange;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/wallets")
+@RequestMapping("/api/v1/yanki/wallets")
 @Tag(name = "Wallet", description = "Wallet management APIs")
 public class WalletController {
 
